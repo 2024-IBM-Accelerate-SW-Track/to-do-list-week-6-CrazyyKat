@@ -61,6 +61,10 @@ async function addItem (request, response) {
 app.get("/get/items", getItems)
 async function getItems (request, response) {
     //begin here
+    // read in the todo lists stored in the database.json file:
+    var data = await fsPromises.readFile("database.json");
+    // Return a response to whoever called the data we just read in, we will return the data from the file but parsed as JSON data:
+    response.json(JSON.parse(data));
 
 };
 
@@ -68,7 +72,14 @@ async function getItems (request, response) {
 app.get("/get/searchitem", searchItems) 
 async function searchItems (request, response) {
     //begin here
-
+    // retrieve a parameter passed to this service, this parameter will be the name of the Todo List we will search for
+    var searchField = request.query.taskname;
+    // read in the database
+    var json = JSON.parse (await fsPromises.readFile("database.json"));
+    // take the data from the database and apply a filter stored in "searchField"
+    var returnData = json.filter(jsondata => jsondata.Task === searchField);
+    // return a response (doesn't matter if we have anything or not)
+    response.json(returnData);
 };
 
 
